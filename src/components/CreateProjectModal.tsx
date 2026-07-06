@@ -155,7 +155,7 @@ export default function CreateProjectModal({ onClose, onCreated }: Props) {
         setCreated(true);
         onCreated(res.data);
       } else {
-        setError(res.message || res.data?.detail || "Failed to create project.");
+        setError(res.message || res.detail || res.data?.detail || "Failed to create project.");
       }
     } catch (e: any) {
       setError(e.message || "Network error. Please try again.");
