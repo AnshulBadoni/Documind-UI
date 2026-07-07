@@ -311,6 +311,7 @@ export default function ProjectDetailPage() {
   const router = useRouter();
   const projectIdStr = pathname.split("/")[2] || "";
 
+  const [project, setProject] = useState<Project | null>(null);
   const [toast, setToast] = useState<{ message: string; type: "success" | "error" | "info" } | null>(null);
   const [confirmModal, setConfirmModal] = useState<{
     show: boolean;
