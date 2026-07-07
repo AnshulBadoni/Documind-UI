@@ -574,14 +574,25 @@ export default function ProjectDetailPage() {
 
   async function handleSync() {
     if (!project) return;
+    const confirmSync = window.confirm(
+      "Are you sure you want to resync? This will re-clone the repository, delete all existing documentation, chunks, and database models, and perform a complete fresh regeneration."
+    );
+    if (!confirmSync) return;
+    
     setSyncing(true);
     try {
-      await apiRequest(`/projects/${project.id}/analysis-runs`, {
+      const res = await apiRequest(`/projects/${project.id}/analysis-runs`, {
         method: "POST",
+        body: JSON.stringify({ force_regenerate: true })
       });
-      alert("Analysis run triggered successfully in background!");
+      if (res.status === 201) {
+        alert("Full project resync and regeneration triggered successfully in the background! Please allow a few minutes for completion.");
+      } else {
+        alert(res.message || "Failed to trigger resync.");
+      }
     } catch (err) {
       console.error(err);
+      alert("Error triggering project resync.");
     } finally {
       setSyncing(false);
     }
@@ -641,11 +652,18 @@ export default function ProjectDetailPage() {
               </div>
 
               <div className="flex items-center gap-3">
+                {/* Resync Button */}
+                <button
+                  onClick={handleSync}
+                  disabled={syncing}
+                  className="flex items-center gap-2 rounded-md border border-slate-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 px-3.5 py-2 text-[13px] font-semibold text-slate-700 dark:text-neutral-300 hover:bg-slate-50 dark:hover:bg-neutral-800 transition disabled:opacity-50 cursor-pointer"
+                >
+                  <RefreshIcon className={`h-4 w-4 ${syncing ? "animate-spin" : ""}`} />
+                  <span>{syncing ? "Resyncing..." : "Resync Project"}</span>
+                </button>
+
                 {/* Project Type Dropdown */}
                 <div className="flex items-center gap-2 rounded-md border border-slate-200 dark:border-neutral-800 bg-slate-50/50 dark:bg-neutral-900/30 px-3.5 py-2">
-                  <span className="text-[12.5px] font-semibold text-slate-500 dark:text-neutral-400 uppercase tracking-wider">
-                    Type:
-                  </span>
                   <select
                     value={project.project_type || "backend"}
                     onChange={async (e) => {
