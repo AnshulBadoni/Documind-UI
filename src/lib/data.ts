@@ -370,6 +370,8 @@ export function getTechIcon(name: string): string {
   if (n.includes("pytorch")) return "/pytorch.svg";
   if (n.includes("scikit-learn")) return "/scikitlearn.svg";
   if (n.includes("flask")) return "/flask.svg";
+  if (n.includes("sqllite")) return "/sqllite.svg";
+  if (n.includes("django")) return "/django.svg";
   if (n.includes("vue")) return "/vue.svg";
   return "/fallback.svg";
 }
