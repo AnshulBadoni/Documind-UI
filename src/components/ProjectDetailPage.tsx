@@ -595,30 +595,31 @@ export default function ProjectDetailPage() {
 
   async function handleSync() {
     if (!project) return;
-    const confirmSync = window.confirm(
-      "Are you sure you want to resync? This will re-clone the repository, delete all existing documentation, chunks, and database models, and perform a complete fresh regeneration.",
-    );
-    if (!confirmSync) return;
-
-    setSyncing(true);
-    try {
-      const res = await apiRequest(`/projects/${project.id}/analysis-runs`, {
-        method: "POST",
-        body: JSON.stringify({ force_regenerate: true }),
-      });
-      if (res.status === 201) {
-        alert(
-          "Full project resync and regeneration triggered successfully in the background! Please allow a few minutes for completion.",
-        );
-      } else {
-        alert(res.message || "Failed to trigger resync.");
+    setConfirmModal({
+      show: true,
+      title: "Resync Project",
+      description: "Are you sure you want to resync? This will re-clone the repository, delete all existing documentation, chunks, and database models, and perform a complete fresh regeneration.",
+      onConfirm: async () => {
+        setConfirmModal((prev) => ({ ...prev, show: false }));
+        setSyncing(true);
+        try {
+          const res = await apiRequest(`/projects/${project.id}/analysis-runs`, {
+            method: "POST",
+            body: JSON.stringify({ force_regenerate: true }),
+          });
+          if (res.status === 201) {
+            showToast("Project resync triggered successfully. Running in background.", "success");
+          } else {
+            showToast(res.message || "Failed to trigger resync.", "error");
+          }
+        } catch (err) {
+          console.error(err);
+          showToast("Error triggering project resync.", "error");
+        } finally {
+          setSyncing(false);
+        }
       }
-    } catch (err) {
-      console.error(err);
-      alert("Error triggering project resync.");
-    } finally {
-      setSyncing(false);
-    }
+    });
   }
 
   if (authLoading || loading) {
@@ -1002,6 +1003,74 @@ export default function ProjectDetailPage() {
           </div>
         </div>
       </div>
+
+      {/* Confirmation Modal */}
+      {confirmModal.show && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 p-4 backdrop-blur-[2px] transition-all">
+          <div className="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 shadow-2xl transition-all dark:bg-neutral-900 border border-slate-100 dark:border-neutral-800">
+            <h3 className="text-lg font-semibold leading-6 text-slate-900 dark:text-white">
+              {confirmModal.title}
+            </h3>
+            <div className="mt-3">
+              <p className="text-sm text-slate-500 dark:text-neutral-400">
+                {confirmModal.description}
+              </p>
+            </div>
+            <div className="mt-6 flex justify-end gap-3">
+              <button
+                type="button"
+                onClick={() => setConfirmModal((prev) => ({ ...prev, show: false }))}
+                className="inline-flex justify-center rounded-lg border border-slate-200 dark:border-neutral-700 bg-white px-4 py-2 text-sm font-medium text-slate-700 dark:text-neutral-300 hover:bg-slate-50 dark:hover:bg-neutral-800 focus:outline-none transition cursor-pointer"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={confirmModal.onConfirm}
+                className={`inline-flex justify-center rounded-lg border border-transparent px-4 py-2 text-sm font-medium text-white shadow-sm focus:outline-none transition cursor-pointer ${
+                  confirmModal.danger
+                    ? "bg-red-600 hover:bg-red-700 focus:ring-red-500"
+                    : "bg-blue-600 hover:bg-blue-700 focus:ring-blue-500"
+                }`}
+              >
+                Confirm
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Toast Messages */}
+      {toast && (
+        <div className="fixed bottom-5 right-5 z-50 flex max-w-sm transform items-center gap-3 rounded-xl border p-4 shadow-xl backdrop-blur-md transition-all duration-300 animate-slide-in bg-white/90 dark:bg-neutral-900/90 border-slate-150 dark:border-neutral-800">
+          <div
+            className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg ${
+              toast.type === "success"
+                ? "bg-emerald-50 text-emerald-500 dark:bg-emerald-500/10"
+                : toast.type === "error"
+                ? "bg-red-50 text-red-500 dark:bg-red-500/10"
+                : "bg-blue-50 text-blue-500 dark:bg-blue-500/10"
+            }`}
+          >
+            {toast.type === "success" ? (
+              <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+              </svg>
+            ) : toast.type === "error" ? (
+              <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            ) : (
+              <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            )}
+          </div>
+          <div className="text-[13px] font-medium text-slate-800 dark:text-neutral-200">
+            {toast.message}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
