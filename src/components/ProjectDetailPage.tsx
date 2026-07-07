@@ -311,32 +311,53 @@ export default function ProjectDetailPage() {
   const router = useRouter();
   const projectIdStr = pathname.split("/")[2] || "";
 
-  const [project, setProject] = useState<Project | null>(null);
+  const [toast, setToast] = useState<{ message: string; type: "success" | "error" | "info" } | null>(null);
+  const [confirmModal, setConfirmModal] = useState<{
+    show: boolean;
+    title: string;
+    description: string;
+    onConfirm: () => void;
+    danger?: boolean;
+  }>({
+    show: false,
+    title: "",
+    description: "",
+    onConfirm: () => {},
+  });
+
+  const showToast = (message: string, type: "success" | "error" | "info" = "success") => {
+    setToast({ message, type });
+    setTimeout(() => setToast(null), 5000);
+  };
 
   const isOwner = project && project.owner_id === getUserIdFromToken();
 
-  const handleDeleteProject = async () => {
+  const handleDeleteProject = () => {
     if (!project) return;
-    const confirmDelete = window.confirm(
-      `Are you sure you want to delete the project "${project.name}"? This action cannot be undone and will permanently delete all related documents, chat history, and analysis results.`,
-    );
-    if (!confirmDelete) return;
-
-    try {
-      const { apiRequest } = await import("@/lib/api");
-      const res = await apiRequest(`/projects/${project.id}`, {
-        method: "DELETE",
-      });
-      if (res.status === 200) {
-        alert("Project deleted successfully");
-        router.push("/project");
-      } else {
-        alert(res.message || "Failed to delete project");
+    setConfirmModal({
+      show: true,
+      title: "Delete Project",
+      description: `Are you sure you want to delete the project "${project.name}"? This action cannot be undone and will permanently delete all related documents, chat history, and analysis results.`,
+      danger: true,
+      onConfirm: async () => {
+        setConfirmModal((prev) => ({ ...prev, show: false }));
+        try {
+          const { apiRequest } = await import("@/lib/api");
+          const res = await apiRequest(`/projects/${project.id}`, {
+            method: "DELETE",
+          });
+          if (res.status === 200) {
+            showToast("Project deleted successfully", "success");
+            setTimeout(() => router.push("/project"), 1000);
+          } else {
+            showToast(res.message || "Failed to delete project", "error");
+          }
+        } catch (err) {
+          console.error("Failed to delete project", err);
+          showToast("An error occurred while deleting the project", "error");
+        }
       }
-    } catch (err) {
-      console.error("Failed to delete project", err);
-      alert("An error occurred while deleting the project");
-    }
+    });
   };
 
   const handleShareProject = async () => {
@@ -353,13 +374,13 @@ export default function ProjectDetailPage() {
         body: JSON.stringify({ target_identity: targetIdentity.trim() }),
       });
       if (res.status === 200) {
-        alert(`Project successfully shared with "${targetIdentity.trim()}"`);
+        showToast(`Project successfully shared with "${targetIdentity.trim()}"`, "success");
       } else {
-        alert(res.message || "Failed to share project");
+        showToast(res.message || "Failed to share project", "error");
       }
     } catch (err) {
       console.error("Failed to share project", err);
-      alert("An error occurred while sharing the project");
+      showToast("An error occurred while sharing the project", "error");
     }
   };
 
@@ -575,18 +596,20 @@ export default function ProjectDetailPage() {
   async function handleSync() {
     if (!project) return;
     const confirmSync = window.confirm(
-      "Are you sure you want to resync? This will re-clone the repository, delete all existing documentation, chunks, and database models, and perform a complete fresh regeneration."
+      "Are you sure you want to resync? This will re-clone the repository, delete all existing documentation, chunks, and database models, and perform a complete fresh regeneration.",
     );
     if (!confirmSync) return;
-    
+
     setSyncing(true);
     try {
       const res = await apiRequest(`/projects/${project.id}/analysis-runs`, {
         method: "POST",
-        body: JSON.stringify({ force_regenerate: true })
+        body: JSON.stringify({ force_regenerate: true }),
       });
       if (res.status === 201) {
-        alert("Full project resync and regeneration triggered successfully in the background! Please allow a few minutes for completion.");
+        alert(
+          "Full project resync and regeneration triggered successfully in the background! Please allow a few minutes for completion.",
+        );
       } else {
         alert(res.message || "Failed to trigger resync.");
       }
@@ -658,12 +681,14 @@ export default function ProjectDetailPage() {
                   disabled={syncing}
                   className="flex items-center gap-2 rounded-md border border-slate-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 px-3.5 py-2 text-[13px] font-semibold text-slate-700 dark:text-neutral-300 hover:bg-slate-50 dark:hover:bg-neutral-800 transition disabled:opacity-50 cursor-pointer"
                 >
-                  <RefreshIcon className={`h-4 w-4 ${syncing ? "animate-spin" : ""}`} />
+                  <RefreshIcon
+                    className={`h-4 w-4 ${syncing ? "animate-spin" : ""}`}
+                  />
                   <span>{syncing ? "Resyncing..." : "Resync Project"}</span>
                 </button>
 
                 {/* Project Type Dropdown */}
-                <div className="flex items-center gap-2 rounded-md border border-slate-200 dark:border-neutral-800 bg-slate-50/50 dark:bg-neutral-900/30 px-3.5 py-2">
+                <div className="flex items-center gap-2 px-3.5 py-2">
                   <select
                     value={project.project_type || "backend"}
                     onChange={async (e) => {
@@ -692,7 +717,7 @@ export default function ProjectDetailPage() {
                         alert("Error updating project type");
                       }
                     }}
-                    className="rounded-md border border-slate-200 dark:border-neutral-700 bg-white dark:bg-neutral-800 px-2 py-1 text-[13px] font-medium text-slate-700 dark:text-neutral-200 outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 cursor-pointer"
+                    className="rounded-sm border border-slate-200 dark:border-neutral-700 bg-white dark:bg-neutral-800 px-2 py-1 text-[13px] font-medium text-slate-700 dark:text-neutral-200 outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 cursor-pointer"
                   >
                     <option value="backend">Backend</option>
                     <option value="frontend">Frontend</option>
