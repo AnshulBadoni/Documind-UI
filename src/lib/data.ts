@@ -71,46 +71,199 @@ export const recentChats = {
   ],
 };
 
-export const projectSuggestions: Record<string, { icon: string; color: string; title: string; sub: string }[]> = {
+export const projectSuggestions: Record<
+  string,
+  { icon: string; color: string; title: string; sub: string }[]
+> = {
   backend: [
-    { icon: "flow", color: "indigo", title: "How does meeting this app work?", sub: "Explain the flow from API to database" },
-    { icon: "database", color: "green", title: "Which services use Redis?", sub: "Show all services that depend on Redis" },
-    { icon: "clock", color: "violet", title: "What changed this week?", sub: "Summarize the changes from the last 7 days" },
-    { icon: "shield", color: "blue", title: "Show authentication flow", sub: "Explain how user authentication works" },
-    { icon: "alert", color: "red", title: "What breaks if Redis goes down?", sub: "Impact analysis and fallback mechanisms" },
-    { icon: "code", color: "sky", title: "Show all environment variables", sub: "List and explain all env variables" },
+    {
+      icon: "flow",
+      color: "indigo",
+      title: "How does meeting this app work?",
+      sub: "Explain the flow from API to database",
+    },
+    {
+      icon: "database",
+      color: "green",
+      title: "Which services use Redis?",
+      sub: "Show all services that depend on Redis",
+    },
+    {
+      icon: "clock",
+      color: "violet",
+      title: "What changed this week?",
+      sub: "Summarize the changes from the last 7 days",
+    },
+    {
+      icon: "shield",
+      color: "blue",
+      title: "Show authentication flow",
+      sub: "Explain how user authentication works",
+    },
+    {
+      icon: "alert",
+      color: "red",
+      title: "What breaks if Redis goes down?",
+      sub: "Impact analysis and fallback mechanisms",
+    },
+    {
+      icon: "code",
+      color: "sky",
+      title: "Show all environment variables",
+      sub: "List and explain all env variables",
+    },
   ],
   frontend: [
-    { icon: "flow", color: "indigo", title: "What components make up the landing page?", sub: "List key visual building blocks" },
-    { icon: "database", color: "green", title: "Explain the UI routing structure", sub: "Map out all views and child routes" },
-    { icon: "clock", color: "violet", title: "How is global state managed?", sub: "Detail store, signals, or context setup" },
-    { icon: "shield", color: "blue", title: "Show the main page layout", sub: "Explain the template and grid structure" },
-    { icon: "alert", color: "red", title: "What UI libraries are installed?", sub: "List Tailwind, Shadcn, or CSS assets" },
-    { icon: "code", color: "sky", title: "How does event handling work?", sub: "Describe component communication" },
+    {
+      icon: "flow",
+      color: "indigo",
+      title: "What components make up the landing page?",
+      sub: "List key visual building blocks",
+    },
+    {
+      icon: "database",
+      color: "green",
+      title: "Explain the UI routing structure",
+      sub: "Map out all views and child routes",
+    },
+    {
+      icon: "clock",
+      color: "violet",
+      title: "How is global state managed?",
+      sub: "Detail store, signals, or context setup",
+    },
+    {
+      icon: "shield",
+      color: "blue",
+      title: "Show the main page layout",
+      sub: "Explain the template and grid structure",
+    },
+    {
+      icon: "alert",
+      color: "red",
+      title: "What UI libraries are installed?",
+      sub: "List Tailwind, Shadcn, or CSS assets",
+    },
+    {
+      icon: "code",
+      color: "sky",
+      title: "How does event handling work?",
+      sub: "Describe component communication",
+    },
   ],
   ml_ai: [
-    { icon: "flow", color: "indigo", title: "What model architecture is used?", sub: "Describe layer structure and parameters" },
-    { icon: "database", color: "green", title: "Explain the dataset training pipeline", sub: "Detail preprocessing, loss, and training steps" },
-    { icon: "clock", color: "violet", title: "Show evaluation metrics", sub: "List accuracy, precision, and recall summaries" },
-    { icon: "shield", color: "blue", title: "How does inference pipeline run?", sub: "Describe data load to model output" },
-    { icon: "alert", color: "red", title: "What frameworks are installed?", sub: "Verify PyTorch, TensorFlow, or Scikit-Learn" },
-    { icon: "code", color: "sky", title: "How is the model saved/exported?", sub: "Describe checkpoint and ONNX formats" },
+    {
+      icon: "flow",
+      color: "indigo",
+      title: "What model architecture is used?",
+      sub: "Describe layer structure and parameters",
+    },
+    {
+      icon: "database",
+      color: "green",
+      title: "Explain the dataset training pipeline",
+      sub: "Detail preprocessing, loss, and training steps",
+    },
+    {
+      icon: "clock",
+      color: "violet",
+      title: "Show evaluation metrics",
+      sub: "List accuracy, precision, and recall summaries",
+    },
+    {
+      icon: "shield",
+      color: "blue",
+      title: "How does inference pipeline run?",
+      sub: "Describe data load to model output",
+    },
+    {
+      icon: "alert",
+      color: "red",
+      title: "What frameworks are installed?",
+      sub: "Verify PyTorch, TensorFlow, or Scikit-Learn",
+    },
+    {
+      icon: "code",
+      color: "sky",
+      title: "How is the model saved/exported?",
+      sub: "Describe checkpoint and ONNX formats",
+    },
   ],
   fullstack: [
-    { icon: "flow", color: "indigo", title: "How does the system request flow work?", sub: "Trace data from client UI to DB" },
-    { icon: "database", color: "green", title: "Explain frontend-backend API contract", sub: "Map out endpoint requests and schemas" },
-    { icon: "clock", color: "violet", title: "How is global auth synced?", sub: "Trace JWT from client storage to API verify" },
-    { icon: "shield", color: "blue", title: "What database models exist?", sub: "Describe key schemas and relations" },
-    { icon: "alert", color: "red", title: "List dependencies in both environments", sub: "Overview of npm/pip packages" },
-    { icon: "code", color: "sky", title: "What environment variables are required?", sub: "Outline config variables needed" },
+    {
+      icon: "flow",
+      color: "indigo",
+      title: "How does the system request flow work?",
+      sub: "Trace data from client UI to DB",
+    },
+    {
+      icon: "database",
+      color: "green",
+      title: "Explain frontend-backend API contract",
+      sub: "Map out endpoint requests and schemas",
+    },
+    {
+      icon: "clock",
+      color: "violet",
+      title: "How is global auth synced?",
+      sub: "Trace JWT from client storage to API verify",
+    },
+    {
+      icon: "shield",
+      color: "blue",
+      title: "What database models exist?",
+      sub: "Describe key schemas and relations",
+    },
+    {
+      icon: "alert",
+      color: "red",
+      title: "List dependencies in both environments",
+      sub: "Overview of npm/pip packages",
+    },
+    {
+      icon: "code",
+      color: "sky",
+      title: "What environment variables are required?",
+      sub: "Outline config variables needed",
+    },
   ],
   mobile: [
-    { icon: "flow", color: "indigo", title: "What screens are registered?", sub: "List all main view controllers and screens" },
-    { icon: "database", color: "green", title: "How does screen navigation work?", sub: "Trace navigator routes and stacks" },
-    { icon: "clock", color: "violet", title: "How is state shared between screens?", sub: "Explain global state management" },
-    { icon: "shield", color: "blue", title: "What local storage is used?", sub: "Describe SQLite, AsyncStore, or MMKV usage" },
-    { icon: "alert", color: "red", title: "Show external API integrations", sub: "Detail network request structures" },
-    { icon: "code", color: "sky", title: "List packages and dependencies", sub: "Overview of native/cross-platform deps" },
+    {
+      icon: "flow",
+      color: "indigo",
+      title: "What screens are registered?",
+      sub: "List all main view controllers and screens",
+    },
+    {
+      icon: "database",
+      color: "green",
+      title: "How does screen navigation work?",
+      sub: "Trace navigator routes and stacks",
+    },
+    {
+      icon: "clock",
+      color: "violet",
+      title: "How is state shared between screens?",
+      sub: "Explain global state management",
+    },
+    {
+      icon: "shield",
+      color: "blue",
+      title: "What local storage is used?",
+      sub: "Describe SQLite, AsyncStore, or MMKV usage",
+    },
+    {
+      icon: "alert",
+      color: "red",
+      title: "Show external API integrations",
+      sub: "Detail network request structures",
+    },
+    {
+      icon: "code",
+      color: "sky",
+      title: "List packages and dependencies",
+      sub: "Overview of native/cross-platform deps",
+    },
   ],
 };
 
@@ -202,9 +355,9 @@ export function getTechIcon(name: string): string {
   if (n.includes("react") || n === "js") return "/react.svg";
   if (n.includes("angular") || n === "js") return "/angular.svg";
   if (n.includes("mongo")) return "/mongo.svg";
-  if (n.includes("redis")) return "/redis.svg";
   if (n.includes("postgres") || n.includes("pgsql") || n.includes("postgresql"))
     return "/pgsql.svg";
+  if (n.includes("redis")) return "/redis.svg";
   if (n.includes("python") || n.includes("fastapi")) return "/python.svg";
   if (n.includes("kafka")) return "/kafka.svg";
   if (n.includes("mysql")) return "/mysql.svg";
@@ -213,5 +366,9 @@ export function getTechIcon(name: string): string {
   if (n.includes("slack")) return "/slack.svg";
   if (n.includes("integration")) return "/integration.svg";
   if (n.includes("docker")) return "/docker.svg";
+  if (n.includes("tensorflow")) return "/tensorflow.svg";
+  if (n.includes("pytorch")) return "/pytorch.svg";
+  if (n.includes("scikit-learn")) return "/scikitlearn.svg";
+  if (n.includes("flask")) return "/flask.svg";
   return "/fallback.svg";
 }
