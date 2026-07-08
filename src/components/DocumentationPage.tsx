@@ -600,7 +600,7 @@ function parseRoutesFromMarkdown(md: string): Route[] {
   // Strategy 2: Parse table format (| Method | Path | ...)
   // Look for tables that have Method/Path columns
   const tableRegex =
-    /\| Method \| Path \| Description \|[\s\S]*?(?=\n#{1,4}|\n\n## |\n### |$)/g;
+    /\|?\s*Method\s*\|\s*Path\s*\|[\s\S]*?(?=\n#{1,4}|\n\n## |\n### |$)/gi;
   const tableMatches = [...md.matchAll(tableRegex)];
 
   tableMatches.forEach((tableMatch) => {
@@ -609,19 +609,36 @@ function parseRoutesFromMarkdown(md: string): Route[] {
       .split("\n")
       .filter((line) => line.trim().startsWith("|") && !line.includes("---"));
 
+    if (lines.length < 2) return;
+
+    // Parse header to find column indices
+    const headers = lines[0]
+      .split("|")
+      .map((h) => h.trim())
+      .filter((h) => h);
+
+    const methodIndex = headers.findIndex((h) => /^method$/i.test(h));
+    const pathIndex = headers.findIndex((h) => /^path$/i.test(h));
+    const descIndex = headers.findIndex((h) => /^description$/i.test(h));
+
+    if (methodIndex === -1 || pathIndex === -1) return;
+
     // Skip header line (index 0)
     for (let i = 1; i < lines.length; i++) {
       const cells = lines[i]
         .split("|")
         .map((c) => c.trim())
         .filter((c) => c);
-      if (cells.length >= 3) {
-        const method = cells[0]
+      if (cells.length > Math.max(methodIndex, pathIndex)) {
+        const method = cells[methodIndex]
           .replace(/`/g, "")
           .trim()
           .toUpperCase() as Route["method"];
-        const path = cells[1].replace(/`/g, "").trim();
-        const description = cells[2].replace(/`/g, "").trim();
+        const path = cells[pathIndex].replace(/`/g, "").trim();
+        const description =
+          descIndex !== -1 && cells[descIndex]
+            ? cells[descIndex].replace(/`/g, "").trim()
+            : "";
 
         if (
           !method ||
